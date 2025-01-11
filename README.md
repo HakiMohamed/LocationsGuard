@@ -1,99 +1,374 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+Plateforme de Gestion pour Entreprise de Location d'Automobiles
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+1. Introduction
+1.1 Contexte et Objectifs
+Ce projet vise à concevoir une plateforme complète et intuitive permettant aux entreprises de location d’automobiles de gérer efficacement leurs opérations internes.
+ Elle doit inclure :
+Une interface administrateur pour gérer les voitures, les clients, les réservations, et les finances.
+Une interface publique où les clients peuvent consulter les offres, réserver des voitures et suivre leurs demandes.
+L'objectif principal est de simplifier la gestion quotidienne en automatisant des tâches essentielles (suivi des entretiens, paiements d’assurance, calculs de coûts, etc.) et d’offrir une expérience utilisateur fluide.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+2. Portée du Projet
+2.1 Partie Administrateur (Interface de Gestion)
+Gestion des Voitures : Ajout, modification et suivi des véhicules (disponibilité, maintenance, assurance).
+Gestion des Clients : Création, suivi, et gestion des historiques de location.
+Gestion des Réservations : Suivi des réservations, génération automatique des contrats, annulations.
+Notifications Automatiques : Alertes pour :
+Entretien des voitures (basé sur la dernière date ou kilométrage).
+Renouvellement des assurances.
+Paiements impayés.
+Analyses et Finances : Calcul des profits/pertes, visualisation des revenus.(optional)
 
-## Description
+2.2 Partie Publique (Site Client)
+Catalogue Dynamique : Liste des voitures disponibles avec filtres (prix, catégorie, transmission, etc.)--(optional)
+Détails des Offres : Informations détaillées sur chaque voiture et ses conditions de location.
+Réservations : Réservation en ligne avec génération de confirmation.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+3. Fonctionnalités Détailées
+3.1 Authentification et Gestion des Rôles
+Pour les Administrateurs :
+Système de connexion sécurisé basé sur JWT.
+Gestion des rôles : Accès réservé uniquement aux administrateurs.
+Pour les Clients :
+Création de compte.
+Suivi des réservations.
 
-## Project setup
+3.2 Gestion des Voitures
+Ajout et Modification :
+Informations nécessaires :
+Marque, modèle, année, prix par jour, transmission, état (disponible, louée, en maintenance).
+Documents : Assurance, papiers légaux.
+Suivi d'Entretien :
+Calcul automatique de la prochaine date d'entretien selon :
+Date du dernier entretien.
+Kilométrage (par exemple : entretien chaque 10 000 km).
+Notifications automatiques pour alerter les gestionnaires.
+Suivi d’Assurance :
+Saisie de la date de début et de fin de l’assurance.
+Notifications de rappel avant expiration.
 
-```bash
-$ npm install
-```
+3.3 Gestion des Clients et Contrats (optional)
+Création d’un profil client avec :
+Informations personnelles (nom, téléphone, email).
+Historique des réservations.
+Génération automatique des contrats de location.
 
-## Compile and run the project
+3.4 Gestion des Réservations
+Affichage des réservations en cours, confirmées ou annulées.
+Réservation automatique des voitures disponibles.
+Gestion des conflits de disponibilités.
 
-```bash
-# development
-$ npm run start
+3.5 Finances et Statistiques (optional)
+Calcul des profits et pertes.
+Visualisation des revenus mensuels et annuels.
+Statistiques sur les voitures les plus louées.
 
-# watch mode
-$ npm run start:dev
+3.6 Notifications Automatiques (optional)
+Entretien des voitures :
+Notification basée sur le dernier entretien ou le kilométrage atteint.
+Assurance :
+Alertes automatiques avant l'expiration.
+Paiements en retard :
+Rappels automatiques pour les clients ayant des factures impayées.
 
-# production mode
-$ npm run start:prod
-```
+3.7 Catalogue Public (optional)
+Affichage des voitures disponibles avec :
+Image, description, prix par jour, disponibilité.
+Moteur de recherche et filtres avancés :
+Par prix, catégorie, transmission, marque, etc.
+Réservation en ligne avec :
+Sélection des dates et calcul automatique du coût.
 
-## Run tests
+4. Architecture Technique
+4.1 Backend
+Framework : NestJS
+API REST modulaire.
+Gestion des services pour la logique métier (voitures, clients, réservations).
+Base de Données : MongoDB
+Collections principales : voitures, clients, réservations, notifications.
+Authentification : JWT.
 
-```bash
-# unit tests
-$ npm run test
+4.2 Frontend
+Framework : React.js
+Application SPA (Single Page Application).
+Utilisation de Redux pour la gestion de l’état global.
+Design : Tailwind CSS
+Interface moderne et responsive.
 
-# e2e tests
-$ npm run test:e2e
+4.3 Hébergement
+Backend : AWS.
+Frontend : Vercel ou Netlify.
+Base de Données : MongoDB Atlas.
 
-# test coverage
-$ npm run test:cov
-```
+5. Modèles de Données
+Voitures
+{
+  "_id": "ObjectId",
+  "marque": "string",
+  "modele": "string",
+  "annee": "number",
+  "prix_par_jour": "number",
+  "transmission": "string",
+  "kilometrage": "number",
+  "date_dernier_entretien": "date",
+  "intervalle_entretien_km": "number", // ex : 10000 km
+  "documents": ["string"], // URLs
+  "assurance": {
+    "date_debut": "date",
+    "date_fin": "date"
+  },
+  "statut": "string" // disponible, louée, en maintenance
+}
 
-## Deployment
+Clients
+{
+  "_id": "ObjectId",
+  "nom": "string",
+  "email": "string",
+  "telephone": "string",
+  "historique_reservations": ["ObjectId"]
+}
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Réservations
+{
+  "_id": "ObjectId",
+  "voiture_id": "ObjectId",
+  "client_id": "ObjectId",
+  "date_debut": "date",
+  "date_fin": "date",
+  "prix_total": "number",
+  "statut": "string" // confirmée, annulée
+}
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+6. Arborescence des Pages
+6.1 Partie Administrateur
+Tableau de bord : Vue globale des voitures, revenus et alertes.
+Gestion des voitures : Liste, ajout, modification.
+Gestion des réservations : Historique et suivi des réservations.
+Gestion des Clients : Profils clients et contrats.
+Statistiques : Profits, pertes, analyses.
+Notifications : Entretien, assurance, paiements.
+6.2 Partie Publique
+Accueil : Présentation de l’entreprise.
+Catalogue : Recherche et liste des voitures.
+Réservation : Formulaire et calcul des coûts.
+Contact : Informations de contact.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+7. Livrables
+API REST NestJS documentée .
+Frontend React.js déployé.
+Base de données MongoDB prête à l’emploi.
+Documentation utilisateur.
 
-## Resources
+8. Contraintes Techniques
+Performances optimisées pour gérer un grand nombre de données.
+Interface utilisateur ergonomique et responsive.
+Sécurité des données (hash des mots de passe, HTTPS).
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Fonctionnalités Clés
+Module
+Fonctionnalités
+Description
+Authentification
+- Connexion sécurisée avec JWT- Gestion des rôles
+L'accès au tableau de bord est réservé aux administrateurs.
+Gestion des voitures
+- Ajouter/modifier des voitures- Suivi des entretiens- Notification d'entretien basé sur date/kilométrage- Suivi des assurances et renouvellements
+Permet de suivre les informations essentielles pour chaque véhicule.
+Réservations
+- Création de réservations- Gestion des conflits de disponibilités- Génération automatique de contrats
+Les réservations sont enregistrées et liées aux véhicules et clients.
+Gestion des clients
+- Ajout/modification de clients- Historique des réservations- Notifications des paiements
+Suivi complet des interactions des clients avec l'entreprise.
+Statistiques
+- Calcul des profits et pertes- Visualisation des revenus- Analyse des performances des voitures
+Aide les gestionnaires à comprendre la rentabilité de l'entreprise.
+Notifications
+- Alertes pour entretiens- Rappel des paiements impayés- Expiration des assurances
+Automatisation des rappels pour éviter les oublis.
+Catalogue Public
+- Liste des voitures disponibles- Recherche avancée- Réservation en ligne
+Permet aux clients de voir les offres et de réserver directement depuis le site public.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. Modèles de Données
+Entité
+Attributs Clés
+Description
+Voiture
+- Marque, modèle, année- Prix par jour- Kilométrage- Date du dernier entretien- Assurance (date début/fin)- Statut (disponible, louée)
+Contient les informations principales sur chaque véhicule.
+Client
+- Nom, email, téléphone- Historique des réservations
+Regroupe les informations des clients et leurs interactions avec l'entreprise.
+Réservation
+- ID voiture- ID client- Dates début/fin- Prix total- Statut (confirmée, annulée)
+Enregistre les réservations effectuées par les clients.
+Notification
+- Type (entretien, assurance, paiement)- Contenu- Date de rappel
+Sert à gérer et déclencher les alertes pour les gestionnaires.
+
+
+3. Flux des Utilisateurs
+Rôle
+Actions Disponibles
+Description
+Administrateur
+- Gérer les voitures- Suivre les réservations- Ajouter des clients- Analyser les performances- Recevoir des notifications
+Interface complète pour gérer toutes les opérations de l'entreprise.
+Client (Public)
+- Consulter le catalogue- Réserver une voiture- Consulter ses réservations
+Interface simplifiée pour permettre aux clients d’interagir facilement avec l’entreprise.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4. Technologie et Architecture
+Composant
+Technologie
+Description
+Backend
+NestJS
+Fournit une API REST modulaire et performante pour la logique métier.
+Base de Données
+MongoDB
+Stocke les informations sur les voitures, clients, réservations, et notifications.
+Frontend
+React.js + Tailwind CSS
+Permet de créer une interface utilisateur moderne, responsive, et intuitive.
+Notifications
+Cron Jobs + Node.js
+Automatisation des rappels (entretien, assurance, paiements).
+
+
+5. Notifications Automatisées
+Type de Notification
+Condition de Déclenchement
+Message Exemple
+Entretien
+Date ou kilométrage atteint
+"La voiture Toyota Corolla doit subir un entretien le 15/01/2024."
+Assurance
+Date d’expiration approchant (ex : 30 jours avant)
+"L’assurance pour la voiture Peugeot 208 expire le 10/02/2024."
+Paiement
+Paiement impayé depuis 7 jours
+"Le client John Doe a une facture impayée de 150€ pour la voiture Renault Clio."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6. Organisation des Pages
+Page
+Contenu
+Public/Admin
+Tableau de Bord
+- Vue globale des voitures, réservations, clients, et notifications.- Statistiques des profits et pertes.
+Admin
+Gestion des Voitures
+- Liste des voitures avec recherche et filtres.- Formulaire d’ajout/modification des voitures.- Détails d'entretien et d’assurance.
+Admin
+Réservations
+- Liste des réservations en cours et passées.- Détails des réservations et génération des contrats.- Ajout manuel de nouvelles réservations.
+Admin
+Catalogue
+- Liste des voitures disponibles.- Filtres avancés (catégorie, prix, transmission).- Formulaire de réservation.
+Public
+Clients
+- Liste des clients.- Historique des réservations pour chaque client.- Notifications liées aux paiements.
+Admin
+Statistiques
+- Graphiques et tableaux sur les revenus, pertes, et performances des voitures.
+Admin
+
+
+
+
