@@ -1,4 +1,5 @@
-import { IsEmail, IsString, MinLength, IsOptional, Matches } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsOptional, Matches, IsPhoneNumber, IsUrl, MaxLength, IsObject } from 'class-validator';
+import { UserRole } from '../enums/role.enum';
 
 export class RegisterDto {
     @IsEmail()
@@ -6,9 +7,6 @@ export class RegisterDto {
 
     @IsString()
     @MinLength(8)
-    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-        message: 'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character'
-    })
     password: string;
 
     @IsString()
@@ -18,8 +16,17 @@ export class RegisterDto {
     lastName: string;
 
     @IsOptional()
-    @IsString()
     phoneNumber?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsUrl()
+    avatarUrl?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsUrl()
+    bannerUrl?: string;
 }
 
 export class LoginDto {
@@ -28,4 +35,69 @@ export class LoginDto {
 
     @IsString()
     password: string;
-} 
+
+    @IsObject()
+    @IsOptional()
+    device?: {
+      name: string;
+      type: string;
+      browser: string;
+      os: string;
+    };
+}
+
+export class UpdateUserDto {
+    @IsOptional()
+    @IsString()
+    firstName?: string;
+
+    @IsOptional()
+    @IsString()
+    lastName?: string;
+
+    @IsOptional()
+    phoneNumber?: string;
+
+    @IsOptional()
+    @IsString()
+    avatarUrl?: string;
+
+    @IsOptional()
+    @IsString()
+    bannerUrl?: string;
+}
+
+export class ChangePasswordDto {
+    @IsString()
+    currentPassword: string;
+
+    @IsString()
+    @MinLength(8)
+    newPassword: string;
+}
+
+export class ResetPasswordDto {
+    @IsString()
+    token: string;
+
+    @IsString()
+    @MinLength(8)
+    newPassword: string;
+}
+
+export class VerifyPhoneDto {
+    @IsString()
+    @MinLength(6)
+    @MaxLength(6)
+    code: string;
+}
+
+export class InitiatePhoneVerificationDto {
+    @IsPhoneNumber()
+    phoneNumber: string;
+}
+
+export class ResendVerificationDto {
+    @IsEmail()
+    email: string;
+}

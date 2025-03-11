@@ -1,26 +1,30 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Device, DeviceSchema } from './device.schema';
 import { UserRole } from '../enums/role.enum';
-
-export type UserDocument = User & Document;
+import { Device } from './device.schema';
 
 @Schema({ timestamps: true })
 export class User {
-    @Prop({ required: true, unique: true, lowercase: true, trim: true })
+    @Prop({ required: true, unique: true, lowercase: true })
     email: string;
 
     @Prop({ required: true })
     password: string;
 
-    @Prop({ required: true, trim: true })
+    @Prop({ required: true })
     firstName: string;
 
-    @Prop({ required: true, trim: true })
+    @Prop({ required: true })
     lastName: string;
 
-    @Prop({ unique: true, sparse: true, trim: true })
+    @Prop()
     phoneNumber?: string;
+
+    @Prop()
+    phoneVerificationCode?: string;
+
+    @Prop()
+    phoneVerificationCodeExpires?: Date;
 
     @Prop({ default: false })
     isEmailVerified: boolean;
@@ -28,35 +32,43 @@ export class User {
     @Prop({ default: false })
     isPhoneVerified: boolean;
 
-    @Prop({ type: [DeviceSchema], default: [] })
-    devices: Device[];
-
     @Prop({ type: String, enum: UserRole, default: UserRole.USER })
     role: UserRole;
 
-    @Prop({ type: String, required: false })
+    @Prop()
     avatarUrl?: string;
 
-    @Prop({ type: String, required: false })
+    @Prop()
     bannerUrl?: string;
 
-    // Pour le tracking
-    @Prop({ type: Date })
+    @Prop({ type: [Object], default: [] })
+    devices: Device[];
+
+    @Prop()
     lastLogin?: Date;
 
-    @Prop({ type: String })
+    @Prop()
     lastLoginIp?: string;
+
+
+    @Prop()
+    drivingLicenseNumber?: string;
+
+    @Prop()
+    drivingLicenseDate?: Date;
+
+    @Prop()
+    drivingLicenseExpirationDate?: Date;
+
+    @Prop()
+    drivingLicenseImage?: string;
+
+    @Prop()
+    city?: string;
+
+    @Prop()
+    address?: string;
 }
 
+export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);
-
-// Index pour la recherche
-UserSchema.index({ email: 1, phoneNumber: 1 });
-
-// Méthode pour masquer les champs sensibles
-UserSchema.methods.toJSON = function () {
-    const obj = this.toObject();
-    delete obj.password;
-    delete obj.__v;
-    return obj;
-}; 

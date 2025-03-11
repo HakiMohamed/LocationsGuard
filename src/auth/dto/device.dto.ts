@@ -1,28 +1,48 @@
-import { IsString, IsOptional } from 'class-validator';
+import { DeviceType } from '../enums/device-type.enum';
 
-export class DeviceDto {
-    @IsString()
-    @IsOptional()
-    deviceId?: string;
+export class LocationDto {
+    country: string;
+    city: string;
+    timezone: string;
+    latitude: number;
+    longitude: number;
+    region: string;
+}
 
-    @IsString()
-    @IsOptional()
-    deviceName?: string;
+export class NetworkDto {
+    ip: string;
+    proxy: boolean;
+    vpn: boolean;
+}
+
+export class BrowserDetailsDto {
+    language: string;
+    plugins: string;
+    doNotTrack: boolean;
+    cookiesEnabled: boolean;
 }
 
 export class DeviceResponseDto {
     deviceId: string;
-    deviceName: string;
-    deviceType: string;
-    browser: string;
-    os: string;
-    lastLogin: Date;
-    lastIp: string;
+    name: string;
+    type: string;
+    ip: string;
     isActive: boolean;
+    lastLogin: Date;
 }
 
 export class DeviceListResponseDto {
     devices: DeviceResponseDto[];
     total: number;
     active: number;
-} 
+}
+
+export class DeviceDto {
+    deviceId: string;
+    name: string;
+    type: string;
+    ip: string;
+    isActive: boolean;
+    lastLogin: Date;
+    fingerprint: string;
+}
