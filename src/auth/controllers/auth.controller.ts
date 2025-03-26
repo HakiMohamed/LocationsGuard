@@ -36,7 +36,6 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response
     ) {
         
-        console.log('login DTO device:', loginDto.device);
         return this.authService.login(loginDto, req, res);
     }
 
@@ -46,7 +45,6 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response
     ) {
-        console.log('Cookies received:', req.cookies); // Pour le debug
         return this.authService.refreshToken(req, res);
     }
 
@@ -126,18 +124,15 @@ export class AuthController {
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response
     ) {
-        console.log('=== Logout Process Started ===');
         
         try {
             // Obtenir l'appareil actuel
             const currentDevice = await this.deviceService.getCurrentDevice(userId, req);
-            console.log('Current device:', currentDevice);
 
             if (currentDevice) {
                 // Supprimer complètement l'appareil actuel
                 await this.deviceService.removeDevice(userId, currentDevice.deviceId);
             } else {
-                console.log('No active device found for current session');
                 throw new NotFoundException('No active device found for current session');
             }
 
@@ -154,7 +149,6 @@ export class AuthController {
 
             return { message: 'Logged out successfully and device removed' };
         } catch (error) {
-            console.error('Logout error:', error);
             throw error;
         }
     }
