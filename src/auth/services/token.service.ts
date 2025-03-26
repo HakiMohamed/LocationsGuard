@@ -44,7 +44,6 @@ export class TokenService {
             // Si vous souhaitez retourner l'utilisateur et le payload, vous pouvez le faire ici
             return { user, payload };
         } catch (error) {
-            console.error('Refresh token validation error:', error);
             throw new UnauthorizedException('Invalid refresh token');
         }
     }
