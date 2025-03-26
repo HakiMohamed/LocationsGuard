@@ -104,7 +104,6 @@ export class AuthService {
         this.setRefreshTokenCookie(res, tokens.refresh_token);
 
         // Log pour debug
-        console.log('Login successful, refresh token cookie should be set');
 
         return {
            
@@ -123,8 +122,7 @@ export class AuthService {
     }
 
     async refreshToken(req: Request, res: Response) {
-        console.log('Refresh token request received');
-        console.log('Cookies:', req.cookies);
+   
 
         const refreshToken = req.cookies['refresh_token'];
         if (!refreshToken) {
@@ -150,7 +148,6 @@ export class AuthService {
                 
             };
         } catch (error) {
-            console.error('Refresh token error:', error);
             throw new UnauthorizedException('Invalid refresh token');
         }
     }
@@ -172,7 +169,6 @@ export class AuthService {
         res.header('Access-Control-Allow-Origin', frontendUrl);
         res.header('Access-Control-Allow-Credentials', 'true');
     
-        console.log('Setting refresh token cookie with options:', cookieOptions);
     }
 
     private async validateUser(loginDto: LoginDto): Promise<UserDocument> {
