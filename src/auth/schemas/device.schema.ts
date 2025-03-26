@@ -1,36 +1,33 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type DeviceDocument = Device & Document;
-
-@Schema({ timestamps: true })
+@Schema({ _id: false })
 export class Device {
     @Prop({ required: true })
-    deviceId: string;  // Identifiant unique généré côté client
+    deviceId: string;
 
     @Prop({ required: true })
-    deviceName: string;
+    name: string;
 
-    @Prop()
-    deviceType: string;
+    @Prop({ required: true })
+    type: string;
 
-    @Prop()
-    browser: string;
+    @Prop({ required: true })
+    ip: string;
 
-    @Prop()
-    os: string;
+    @Prop({ required: true, default: true })
+    isActive: boolean;
 
-    @Prop()
+    @Prop({ required: true })
     lastLogin: Date;
 
-    @Prop()
-    refreshToken: string;
+    @Prop({ required: true })
+    fingerprint: string;
 
     @Prop()
-    lastIp: string;  // Dernier IP connu
-
-    @Prop({ type: [String] })
-    knownIps: string[];  // Historique des IPs
+    refreshToken?: string;
 }
 
-export const DeviceSchema = SchemaFactory.createForClass(Device); 
+export const DeviceSchema = SchemaFactory.createForClass(Device);
+
+
