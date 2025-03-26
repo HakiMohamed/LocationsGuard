@@ -19,8 +19,7 @@ export class DeviceService {
         refreshToken: string,
         req: Request
     ): Promise<DeviceResponseDto> {
-        console.log('=== Handling Login Device ===');
-        console.log('Device info from frontend:', req.body);
+      
         const deviceInfo = await this.fingerprintService.parseDeviceInfo(req);
         const fingerprint = await this.fingerprintService.generateSimpleFingerprint(req);
 
@@ -102,21 +101,17 @@ export class DeviceService {
     }
 
     async deactivateDevice(userId: string | any, deviceId: string): Promise<void> {
-        console.log('=== Deactivating Device - Detailed Debug ===');
-        console.log('UserId:', userId);
-        console.log('DeviceId:', deviceId);
-
+        
         // Extraire le bon userId depuis le token JWT
         const actualUserId = typeof userId === 'object' && userId.sub ? userId.sub.toString() : userId.toString();
-        console.log('Actual UserId:', actualUserId);
+      
 
         // Vérifier l'état avant la mise à jour
         const beforeUser = await this.userModel.findOne({
             _id: actualUserId,
             'devices.deviceId': deviceId
         });
-        console.log('Device state BEFORE update:', beforeUser?.devices.find(d => d.deviceId === deviceId));
-
+       
         // Effectuer la mise à jour
         const result = await this.userModel.updateOne(
             {
@@ -132,11 +127,7 @@ export class DeviceService {
             }
         );
 
-        console.log('MongoDB update result:', {
-            matchedCount: result.matchedCount,
-            modifiedCount: result.modifiedCount,
-            acknowledged: result.acknowledged
-        });
+      
 
         // Vérifier l'état après la mise à jour
         const afterUser = await this.userModel.findOne({
@@ -145,25 +136,20 @@ export class DeviceService {
         });
         
         const updatedDevice = afterUser?.devices.find(d => d.deviceId === deviceId);
-        console.log('Device state AFTER update:', updatedDevice);
 
         if (result.matchedCount === 0) {
-            console.error('No matching device found for deactivation');
             throw new NotFoundException('Device not found');
         }
 
         if (result.modifiedCount === 0) {
-            console.warn('Device found but no modifications were made');
             throw new NotFoundException('Failed to deactivate device');
         }
 
         // Vérifier si le device a bien été désactivé
         if (updatedDevice && updatedDevice.isActive === true) {
-            console.error('Device is still active after update!');
             throw new Error('Failed to deactivate device');
         }
 
-        console.log('=== Device Deactivation Complete ===');
     }
 
     async deactivateAllDevices(userId: string | any, exceptCurrent?: boolean): Promise<void> {
@@ -255,69 +241,46 @@ export class DeviceService {
     }
 
     async getCurrentDevice(userId: string | any, req: Request): Promise<any> {
-        console.log('=== Getting Current Device - Debug ===');
-        console.log('Raw userId:', userId);
-        console.log('Type of userId:', typeof userId);
-        console.log('Request user:', req.user);
+        
 
         let actualUserId;
         if (typeof userId === 'object' && userId.sub) {
             actualUserId = userId.sub.toString();
-            console.log('Using sub from object:', actualUserId);
         } else {
             actualUserId = userId.toString();
-            console.log('Using userId directly:', actualUserId);
         }
 
-        console.log('Final actualUserId:', actualUserId);
         
         const fingerprint = await this.fingerprintService.generateSimpleFingerprint(req);
-        console.log('Current fingerprint:', fingerprint);
 
         const user = await this.userModel.findById(actualUserId);
         if (!user) {
-            console.log('No user found with id:', actualUserId);
             throw new NotFoundException('User not found');
         }
 
-        console.log('Found user:', {
-            userId: user._id,
-            deviceCount: user.devices?.length
-        });
+      
 
         const currentDevice = user.devices?.find(device => 
             device.fingerprint === fingerprint && device.isActive
         );
 
-        console.log('Found device:', currentDevice);
         return currentDevice;
     }
 
     async removeDevice(userId: string | any, deviceId: string): Promise<void> {
-        console.log('=== Removing Device - Detailed Debug ===');
-        console.log('Raw UserId:', userId);
-        console.log('Type of userId:', typeof userId);
-        console.log('Has sub property:', 'sub' in userId);
-        console.log('Sub value:', userId.sub);
-        console.log('Type of sub:', typeof userId.sub);
-        console.log('DeviceId:', deviceId);
+      
 
         try {
             // Extraire le bon userId depuis le token JWT
             let actualUserId;
             if (typeof userId === 'object' && userId.sub) {
                 actualUserId = userId.sub.toString();
-                console.log('Using sub from object:', actualUserId);
             } else {
                 actualUserId = userId.toString();
-                console.log('Using userId directly:', actualUserId);
             }
 
-            console.log('Final actualUserId:', actualUserId);
-            console.log('Type of actualUserId:', typeof actualUserId);
-
+           
             // Vérifier l'état avant la mise à jour
-            console.log('Attempting to find user with _id:', actualUserId);
             const beforeUser = await this.userModel.findOne({
                 _id: actualUserId,
                 'devices.deviceId': deviceId
@@ -376,11 +339,7 @@ export class DeviceService {
 
             console.log('=== Device Removal Complete ===');
         } catch (error) {
-            console.error('Error in removeDevice:', {
-                name: error.name,
-                message: error.message,
-                stack: error.stack
-            });
+           
             throw error;
         }
     }
