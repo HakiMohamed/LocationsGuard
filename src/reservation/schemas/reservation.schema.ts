@@ -16,7 +16,12 @@ export class Reservation {
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User', required: true })
     client: User;
 
-    @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Automobile', required: true })
+    @Prop({ 
+        type: MongooseSchema.Types.ObjectId, 
+        ref: 'Automobile', 
+        required: true,
+        onDelete: 'CASCADE'
+    })
     automobile: Automobile;
 
     @Prop({ required: true })

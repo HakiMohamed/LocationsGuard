@@ -1,6 +1,6 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsArray, IsBoolean } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsArray, IsBoolean, IsDate } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { FuelType, TransmissionType } from '../schemas/automobile.schema';
+import { FuelType, TransmissionType, InsuranceType } from '../schemas/automobile.schema';
 import { IsObjectId, TransformObjectId } from '../../common/decorators/is-object-id.decorator'; 
 
 
@@ -81,4 +81,12 @@ export class CreateAutomobileDto {
     @IsOptional()
     @IsBoolean()
     isAvailable?: boolean;
+
+
+    @IsOptional()
+    lastVidangeDate?: Date;
+
+    @IsOptional()
+    @IsEnum(InsuranceType)
+    insuranceType?: InsuranceType;
 }

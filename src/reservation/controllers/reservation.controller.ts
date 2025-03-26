@@ -7,7 +7,8 @@ import {
     Put, 
     Delete, 
     Query,
-    UseGuards 
+    UseGuards,
+    Res 
 } from '@nestjs/common';
 import { ReservationService } from '../services/reservation.service';
 import { CreateReservationDto } from '../dto/create-reservation.dto';
@@ -16,6 +17,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { UserRole } from '../../auth/enums/role.enum';
+import { Response } from 'express';
 
 @Controller('reservations')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -78,6 +80,13 @@ export class ReservationController {
         @Body() updateReservationDto: UpdateReservationDto
     ) {
         return this.reservationService.update(id, updateReservationDto);
+    
+    }
+
+    @Put(':id/isPayed')
+    @Roles(UserRole.ADMIN)
+    async updatePaymentStatus(@Param('id') id: string, @Body('isPaid') isPaid: boolean) {
+        return this.reservationService.updatePaymentStatus(id, isPaid);
     }
 
     @Put(':id/cancel')
@@ -112,4 +121,30 @@ export class ReservationController {
     async pending(@Param('id') id: string) {
         return this.reservationService.SetPending(id);
     }
-} 
+
+    @Put(':id/status')
+    @Roles(UserRole.ADMIN)
+    async updateStatus(
+        @Param('id') id: string,
+        @Body('status') status: string
+    ) {
+        return this.reservationService.updateStatus(id, status);
+    }
+
+    @Get(':id/contract')
+    @Roles(UserRole.ADMIN, UserRole.CLIENT)
+    async generateContract(
+        @Param('id') id: string,
+        @Res() res: Response
+    ) {
+        const pdfBuffer = await this.reservationService.generateContract(id);
+        
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=contrat_location_${id}.pdf`,
+            'Content-Length': pdfBuffer.length
+        });
+        
+        res.end(pdfBuffer);
+    }
+}

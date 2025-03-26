@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { Automobile, AutomobileDocument } from '../schemas/automobile.schema';
 import { CreateAutomobileDto } from '../dto/create-automobile.dto';
 import { UpdateAutomobileDto } from '../dto/update-automobile.dto';
+import { Reservation, ReservationDocument } from '../../reservation/schemas/reservation.schema';
 
 @Injectable()
 export class AutomobileService {
     constructor(
         @InjectModel(Automobile.name) private automobileModel: Model<AutomobileDocument>,
+        @InjectModel(Reservation.name) private reservationModel: Model<ReservationDocument>,
     ) {}
 
     async create(createAutomobileDto: CreateAutomobileDto): Promise<any> {
@@ -192,5 +194,109 @@ export class AutomobileService {
                 error: error.message,
             });
         }
+    }
+
+    async getMostReservedAutomobiles(limit: number = 5): Promise<any> {
+        const reservationStats = await this.reservationModel.aggregate([
+            {
+                $group: {
+                    _id: '$automobile',
+                    reservationCount: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { reservationCount: -1 }
+            },
+            {
+                $limit: limit
+            },
+            {
+                $lookup: {
+                    from: 'automobiles',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'automobileDetails'
+                }
+            },
+            {
+                $unwind: '$automobileDetails'
+            },
+            {
+                $project: {
+                    _id: '$automobileDetails._id',
+                    brand: '$automobileDetails.brand',
+                    model: '$automobileDetails.model',
+                    year: '$automobileDetails.year',
+                    categoryId: '$automobileDetails.category',
+                    reservationCount: 1
+                }
+            },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'categoryId',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                }
+            },
+            {
+                $unwind: '$categoryDetails'
+            },
+            {
+                $project: {
+                    automobileId: '$_id',
+                    brand: 1,
+                    model: 1,
+                    year: 1,
+                    categoryId: 1,
+                    categoryName: '$categoryDetails.name',
+                    reservationCount: 1
+                }
+            }
+        ]);
+
+        return {
+            success: true,
+            data: reservationStats
+        };
+    }
+
+    async getLeastReservedAutomobiles(limit: number = 5): Promise<any> {
+        const allAutomobiles = await this.automobileModel
+            .find()
+            .populate('category', 'name')
+            .lean();
+        
+        const reservationStats = await this.reservationModel.aggregate([
+            {
+                $group: {
+                    _id: '$automobile',
+                    reservationCount: { $sum: 1 }
+                }
+            }
+        ]);
+
+        const reservationCountMap = new Map(
+            reservationStats.map(stat => [stat._id.toString(), stat.reservationCount])
+        );
+
+        const automobilesWithCounts = allAutomobiles.map(auto => ({
+            automobileId: auto._id,
+            brand: auto.brand,
+            model: auto.model,
+            year: auto.year,
+            categoryId: (auto.category as any)._id,
+            categoryName: (auto.category as any).name,
+            reservationCount: reservationCountMap.get(auto._id.toString()) || 0
+        }));
+
+        const sortedAutomobiles = automobilesWithCounts
+            .sort((a, b) => a.reservationCount - b.reservationCount)
+            .slice(0, limit);
+
+        return {
+            success: true,
+            data: sortedAutomobiles
+        };
     }
 }
