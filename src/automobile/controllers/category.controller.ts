@@ -44,8 +44,7 @@ export class CategoryController {
             fileIsRequired: false,
         })) file?: Express.Multer.File
     ) {
-        console.log('Controller - Received create request');
-        console.log('Controller - File received:', file);
+      
         return this.categoryService.create(createCategoryDto, file);
     }
 
