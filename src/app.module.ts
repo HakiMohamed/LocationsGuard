@@ -13,6 +13,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { ClientModule } from './client/client.module';
 import { UsersModule } from './users/users.module';
 import { ReservationModule } from './reservation/reservation.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { ReservationModule } from './reservation/reservation.module';
         ClientModule,
         UsersModule,
         ReservationModule,
+        ScheduleModule.forRoot(),
     ],
     providers: [
         {
