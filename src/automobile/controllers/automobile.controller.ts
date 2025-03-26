@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseInterceptors, UploadedFiles, Query, BadRequestException } from '@nestjs/common';
 import { AutomobileService } from '../services/automobile.service';
 import { CreateAutomobileDto } from '../dto/create-automobile.dto';
 import { UpdateAutomobileDto } from '../dto/update-automobile.dto';
@@ -6,10 +6,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { ConfigService } from '@nestjs/config';
-import { RequestLoggerInterceptor } from '../../common/interceptors/request-logger.interceptor';
 
 @Controller('automobiles')
-@UseInterceptors(RequestLoggerInterceptor)
 export class AutomobileController {
     constructor(
         private readonly automobileService: AutomobileService,
@@ -42,7 +40,7 @@ export class AutomobileController {
             // Prepend the base URL to the image filenames
             createAutomobileDto.images = images.map(image => `${appUrl}/uploads/automobiles/${image.filename}`);
         }
-        console.log(createAutomobileDto);
+        
         return this.automobileService.create(createAutomobileDto);
     }
 
@@ -105,5 +103,23 @@ export class AutomobileController {
     @Get('category/:categoryId/count')
     async getCategoryCount(@Param('categoryId') categoryId: string) {
         return this.automobileService.getCategoryCount(categoryId);
+    }
+
+    @Get('stats/most-reserved')
+    async getMostReservedAutomobiles(@Query('limit') limitStr?: string) {
+        const limit = limitStr ? parseInt(limitStr, 10) : 5;
+        if (isNaN(limit) || limit <= 0) {
+            throw new BadRequestException('Limit must be a positive number');
+        }
+        return this.automobileService.getMostReservedAutomobiles(limit);
+    }
+
+    @Get('stats/least-reserved')
+    async getLeastReservedAutomobiles(@Query('limit') limitStr?: string) {
+        const limit = limitStr ? parseInt(limitStr, 10) : 5;
+        if (isNaN(limit) || limit <= 0) {
+            throw new BadRequestException('Limit must be a positive number');
+        }
+        return this.automobileService.getLeastReservedAutomobiles(limit);
     }
 }
